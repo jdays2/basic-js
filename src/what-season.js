@@ -12,25 +12,20 @@ const { NotImplementedError } = require("../extensions/index.js");
  *
  */
 function getSeason(date) {
-	const isInvalidDate = (d) => {
-		return !(d instanceof Date) || isNaN(d.getTime());
-	};
-
 	if (!date) {
 		return "Unable to determine the time of year!";
 	}
-
-	if (isInvalidDate(date)) {
+	//Ура! Я оказывается случайно кое что удалил из what-season.test.js и просидел зря 3 часа
+	if (
+		date == Date() ||
+		isNaN(date) ||
+		Object.getOwnPropertyNames(date).length > 0 ||
+		!(date instanceof Date) ||
+		!(Object.prototype.toString.call(date) === "[object Date]")
+	) {
 		throw new Error("Invalid date!");
-	}
-
-	if (isInvalidDate(new Date(date))) {
-		throw new Error("Invalid date!");
-	}
-
-	const month = date.getMonth();
-
-	if (typeof month !== "undefined") {
+	} else {
+		const month = date.getMonth();
 		if (month >= 2 && month <= 4) {
 			return "spring";
 		} else if (month >= 5 && month <= 7) {
