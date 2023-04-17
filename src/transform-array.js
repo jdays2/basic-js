@@ -17,25 +17,37 @@ function transform(arr) {
 	if (!Array.isArray(arr)) {
 		throw Error("'arr' parameter must be an instance of the Array!");
 	}
+
 	let array = [];
+	let lastDiscarded = false;
+
 	for (let i = 0; i < arr.length; i++) {
 		if (arr[i] === "--double-next") {
-			array.push(arr[i + 1]);
-			continue;
+			if (arr[i + 1] !== undefined) {
+				array.push(arr[i + 1]);
+			}
 		} else if (arr[i] === "--discard-prev") {
-			array.pop();
-			continue;
+			if (!lastDiscarded && array.length > 0) {
+				array.pop();
+			}
+			lastDiscarded = false;
 		} else if (arr[i] === "--double-prev") {
-			array.push(arr[i - 1]);
-			continue;
-		} else if (arr[i] === "discard-next") {
+			if (!lastDiscarded && i > 0 && array.length > 0) {
+				array.push(array[array.length - 1]);
+			}
+			lastDiscarded = false;
+		} else if (arr[i] === "--discard-next") {
 			i++;
-			continue;
-		} else array.push(arr[i]);
+			lastDiscarded = true;
+		} else {
+			array.push(arr[i]);
+			lastDiscarded = false;
+		}
 	}
+
 	return array;
 }
-
+console.log([1, 2, 3, "--discard-next", 1337, "--double-prev", 4, 5]);
 console.log(
 	transform([1, 2, 3, "--discard-next", 1337, "--double-prev", 4, 5])
 );
